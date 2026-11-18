@@ -1,0 +1,29 @@
+{
+  "repo_notes": [
+    {
+      "content": "Write every wiki page, including titles, body text, tables, and diagram labels, in Japanese (日本語). Keep code, file paths, attribute names, and command names in their original English form. This repository is auro-button, the accessible button Web Component of Alaska Airlines' Auro Design System."
+    }
+  ],
+  "pages": [
+    { "title": "概要", "purpose": "What auro-button is, its role in the Auro Design System, and the main features" },
+    { "title": "導入とインストール", "purpose": "How to install, register, and use the component (README, docs/partials, package usage)", "parent": "概要" },
+    { "title": "パッケージ構成とエクスポート", "purpose": "package.json, exports, build outputs, and entry points", "parent": "概要" },
+    { "title": "コンポーネント構造", "purpose": "Overall architecture of the component source in src/" },
+    { "title": "AuroButton 要素", "purpose": "src/auro-button.js: properties, rendering, events, and lifecycle", "parent": "コンポーネント構造" },
+    { "title": "AuroElement 基底クラスと属性の受け渡し", "purpose": "The AuroElement base class and how attributes are transported to the inner button", "parent": "コンポーネント構造" },
+    { "title": "フォーム連携とアクセシビリティ", "purpose": "How the button works with forms (type submit/reset/button), ARIA, and keyboard behavior", "parent": "コンポーネント構造" },
+    { "title": "スタイル", "purpose": "SCSS styling system in src/styles" },
+    { "title": "形・サイズ・レイアウト", "purpose": "Shape, size, and layout SCSS", "parent": "スタイル" },
+    { "title": "色・バリエーション・デザイントークン", "purpose": "Colors, variants, and design tokens", "parent": "スタイル" },
+    { "title": "API リファレンスとドキュメント", "purpose": "Public API and the documentation sources" },
+    { "title": "公開 API（属性・スロット・パーツ）", "purpose": "Attributes, slots, CSS parts, and events", "parent": "API リファレンスとドキュメント" },
+    { "title": "API 使用例", "purpose": "The apiExamples/ catalog", "parent": "API リファレンスとドキュメント" },
+    { "title": "ドキュメント生成とデモページ", "purpose": "docs/ pipeline and demo/ pages, including npm run dev", "parent": "API リファレンスとドキュメント" },
+    { "title": "開発とリリースの流れ", "purpose": "Development and release workflow" },
+    { "title": "テスト", "purpose": "test/ with Web Test Runner, axe accessibility checks, and how to run npx auro test", "parent": "開発とリリースの流れ" },
+    { "title": "Lint・フォーマット・Git フック", "purpose": "Biome, stylelint, husky pre-commit and commitlint", "parent": "開発とリリースの流れ" },
+    { "title": "CI/CD とリリース", "purpose": ".github/workflows and semantic release", "parent": "開発とリリースの流れ" },
+    { "title": "リポジトリの運営ルール", "purpose": "CODEOWNERS, contribution guidelines, and issue/PR templates", "parent": "開発とリリースの流れ" },
+    { "title": "用語集", "purpose": "Glossary of terms used in this repository" }
+  ]
+}

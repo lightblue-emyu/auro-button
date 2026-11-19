@@ -377,7 +377,8 @@ export class AuroButton extends AuroElement {
    */
   surfaceResetEvent() {
     if (this.form) {
-      this.form.reset();
+      // Called from the prototype so a form control named "reset" can't shadow the method.
+      HTMLFormElement.prototype.reset.call(this.form);
     }
   }
 

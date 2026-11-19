@@ -383,6 +383,22 @@ describe("auro-button", () => {
     expect(input.value).to.equal("initial");
   });
 
+  it('resets a native form that has a control named "reset"', async () => {
+    const el = await fixture(html`
+      <form id="test-form">
+        <input name="reset" aria-label="Reset code" value="initial" />
+        <auro-button type="reset">Reset</auro-button>
+      </form>
+    `);
+
+    const input = el.querySelector("input");
+    input.value = "changed";
+    el.querySelector("auro-button").shadowRoot.querySelector("button").click();
+    await elementUpdated(el);
+
+    expect(input.value).to.equal("initial");
+  });
+
   it('does not reset a native form with type="submit" or type="button"', async () => {
     const el = await fixture(html`
       <form id="test-form">

@@ -449,6 +449,39 @@ describe("auro-button", () => {
     expect(input.value).to.equal("Changed");
   });
 
+  it("does not reset or submit a native form from inside a disabled fieldset", async () => {
+    const el = await fixture(html`
+      <form>
+        <input aria-label="Name" name="name" value="Auro" />
+        <fieldset disabled>
+          <legend>Actions</legend>
+          <auro-button type="reset">Reset</auro-button>
+          <auro-button type="submit">Submit</auro-button>
+        </fieldset>
+      </form>
+    `);
+
+    const mockReset = sinon.spy();
+    const mockSubmit = sinon.spy();
+    el.addEventListener("reset", mockReset);
+    el.addEventListener("submit", (e) => {
+      e.preventDefault();
+      mockSubmit();
+    });
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    for (const auroButton of el.querySelectorAll("auro-button")) {
+      auroButton.shadowRoot.querySelector("button").click();
+    }
+    await elementUpdated(el);
+
+    expect(mockReset.called).to.be.false;
+    expect(mockSubmit.called).to.be.false;
+    expect(input.value).to.equal("Changed");
+  });
+
   it("does not handle form association when not inside a form", async () => {
     const el = await fixture(html`
       <auro-button type="submit">Submit</auro-button>

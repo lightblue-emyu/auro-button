@@ -365,7 +365,7 @@ export class AuroButton extends AuroElement {
    * @returns {void}
    */
   surfaceSubmitEvent() {
-    if (this.form) {
+    if (this.form && !this.matches(":disabled")) {
       this.form.requestSubmit();
     }
   }
@@ -376,7 +376,7 @@ export class AuroButton extends AuroElement {
    * @returns {void}
    */
   surfaceResetEvent() {
-    if (this.form) {
+    if (this.form && !this.matches(":disabled")) {
       // Called from the prototype so a form control named "reset" can't shadow the method.
       HTMLFormElement.prototype.reset.call(this.form);
     }

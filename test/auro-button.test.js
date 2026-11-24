@@ -356,6 +356,99 @@ describe("auro-button", () => {
     expect(mockSubmit.calledOnce).to.be.false;
   });
 
+  it('resets a native form with type="reset"', async () => {
+    const el = await fixture(html`
+      <form>
+        <input aria-label="Name" name="name" value="Auro" />
+        <auro-button type="reset">Reset</auro-button>
+      </form>
+    `);
+
+    const mockReset = sinon.spy();
+    el.addEventListener("reset", mockReset);
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    const auroButton = el.querySelector("auro-button");
+    const innerButton = auroButton.shadowRoot.querySelector("button");
+    expect(auroButton.form).to.equal(el);
+    expect(innerButton.getAttribute("type")).to.equal("reset");
+
+    innerButton.click();
+    await elementUpdated(el);
+
+    expect(mockReset.calledOnce).to.be.true;
+    expect(input.value).to.equal("Auro");
+  });
+
+  it('resets a native form that has a control named "reset"', async () => {
+    const el = await fixture(html`
+      <form>
+        <input aria-label="Name" name="name" value="Auro" />
+        <input aria-label="Reset field" name="reset" value="x" />
+        <auro-button type="reset">Reset</auro-button>
+      </form>
+    `);
+
+    const input = el.querySelector('input[name="name"]');
+    input.value = "Changed";
+
+    el.querySelector("auro-button").shadowRoot.querySelector("button").click();
+    await elementUpdated(el);
+
+    expect(input.value).to.equal("Auro");
+  });
+
+  it('does not reset a native form when type is "submit" or "button"', async () => {
+    const el = await fixture(html`
+      <form>
+        <input aria-label="Name" name="name" value="Auro" />
+        <auro-button type="submit">Submit</auro-button>
+        <auro-button type="button">Button</auro-button>
+      </form>
+    `);
+
+    const mockReset = sinon.spy();
+    el.addEventListener("reset", mockReset);
+    el.addEventListener("submit", (e) => e.preventDefault());
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    for (const auroButton of el.querySelectorAll("auro-button")) {
+      auroButton.shadowRoot.querySelector("button").click();
+    }
+    await elementUpdated(el);
+
+    expect(mockReset.called).to.be.false;
+    expect(input.value).to.equal("Changed");
+  });
+
+  it("does not reset a native form when the reset button is static or disabled", async () => {
+    const el = await fixture(html`
+      <form>
+        <input aria-label="Name" name="name" value="Auro" />
+        <auro-button type="reset" static>Static reset</auro-button>
+        <auro-button type="reset" disabled>Disabled reset</auro-button>
+      </form>
+    `);
+
+    const mockReset = sinon.spy();
+    el.addEventListener("reset", mockReset);
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    for (const auroButton of el.querySelectorAll("auro-button")) {
+      auroButton.shadowRoot.querySelector("button, span").click();
+    }
+    await elementUpdated(el);
+
+    expect(mockReset.called).to.be.false;
+    expect(input.value).to.equal("Changed");
+  });
+
   it("does not handle form association when not inside a form", async () => {
     const el = await fixture(html`
       <auro-button type="submit">Submit</auro-button>

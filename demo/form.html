@@ -34,10 +34,24 @@
             should not submit this form :)
         </auro-button>
     </form>
+
+    <form id="reset-form">
+        <p>
+            <label for="reset-form-name">Name</label>
+            <input id="reset-form-name" name="name" value="Auro" />
+        </p>
+        <p>
+            <label for="reset-form-email">Email</label>
+            <input id="reset-form-email" name="email" type="email" value="auro@example.com" />
+        </p>
+        <auro-button type="reset">
+            Reset this form
+        </auro-button>
+    </form>
 </main>
 
 <script type="module" data-demo-script="true">
-  import { initExamples } from './index.js';
+  import { initExamples } from './index.min.js';
 
   initExamples();
 </script>

@@ -47,7 +47,7 @@ const ICON_SELECTOR = "auro-icon, [auro-icon], svg, img";
  * - **Loading state**: `loading` swaps the label for a loading indicator and blocks clicks
  *   while work is in progress, without changing the button's width.
  * - **Forms**: `type="submit"` submits the form the button is placed in, and `type="reset"`
- *   resets an `<auro-form>`.
+ *   resets it, whether it's a native `<form>` or an `<auro-form>`.
  *
  * **Example**
  * ```html
@@ -275,7 +275,7 @@ export class AuroButton extends AuroElement {
       },
 
       /**
-       * Sets what the button does in a form. `submit` submits the form the button is placed in, whether it's a native `<form>` or an `<auro-form>`, and `reset` resets the fields of an `<auro-form>` but has no effect in a native `<form>`. When the button runs its own action, leave it unset or use `button`.
+       * Sets what the button does in a form. `submit` submits the form the button is placed in, whether it's a native `<form>` or an `<auro-form>`, and `reset` resets the fields of that form, whether it's a native `<form>` or an `<auro-form>`. When the button runs its own action, leave it unset or use `button`.
        * @type {"submit" | "reset" | "button"}
        * @category behavior
        */
@@ -365,9 +365,35 @@ export class AuroButton extends AuroElement {
    * @returns {void}
    */
   surfaceSubmitEvent() {
-    if (this.form) {
+    if (this.form && !this.matches(":disabled")) {
       this.form.requestSubmit();
     }
+  }
+
+  /**
+   * Resets the form the button is placed in, if there is one.
+   * @private
+   * @returns {void}
+   */
+  surfaceResetEvent() {
+    if (this.form && !this.matches(":disabled")) {
+      // Called from the prototype so a form control named "reset" can't shadow the method.
+      HTMLFormElement.prototype.reset.call(this.form);
+    }
+  }
+
+  /**
+   * Gets the click handler for the button's form action, based on its `type`.
+   * @private
+   * @returns {Function | undefined} - The handler, or `undefined` if the button has no form action.
+   */
+  get formActionHandler() {
+    if (this.static) return undefined;
+
+    if (this.type === "submit") return this.surfaceSubmitEvent;
+    if (this.type === "reset") return this.surfaceResetEvent;
+
+    return undefined;
   }
 
   /**
@@ -663,7 +689,7 @@ export class AuroButton extends AuroElement {
         name="${ifDefined(this.name ? this.name : undefined)}"
         type="${ifDefined(this.type ? this.type : undefined)}"
         variant="${ifDefined(this.variant ? this.variant : undefined)}"
-        @click="${!this.static && this.type === "submit" ? this.surfaceSubmitEvent : undefined}"
+        @click="${this.formActionHandler}"
         @pointerenter="${this.onPointerEvent}"
         @pointerleave="${this.onPointerEvent}"
         @pointerdown="${this.onPointerEvent}"

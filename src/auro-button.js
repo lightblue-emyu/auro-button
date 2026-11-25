@@ -371,15 +371,21 @@ export class AuroButton extends AuroElement {
   }
 
   /**
-   * Resets the form the button is placed in, if there is one.
+   * Resets the form the button is placed in, if there is one, unless a listener cancels the click.
    * @private
+   * @param {MouseEvent} event - The click event.
    * @returns {void}
    */
-  surfaceResetEvent() {
-    if (this.form && !this.matches(":disabled")) {
+  surfaceResetEvent(event) {
+    // Waits until the click finishes propagating, so listeners on ancestors such as the form can cancel it, as with a native reset button.
+    setTimeout(() => {
+      if (event.defaultPrevented || !this.form || this.matches(":disabled")) {
+        return;
+      }
+
       // Called from the prototype so a form control named "reset" can't shadow the method.
       HTMLFormElement.prototype.reset.call(this.form);
-    }
+    });
   }
 
   /**

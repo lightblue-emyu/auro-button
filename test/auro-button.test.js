@@ -7,7 +7,13 @@
 /* eslint-disable no-undef */
 
 import { useAccessibleIt } from "@aurodesignsystem/auro-library/scripts/test-plugin/iterateWithA11Check.mjs";
-import { elementUpdated, expect, fixture, html } from "@open-wc/testing";
+import {
+  aTimeout,
+  elementUpdated,
+  expect,
+  fixture,
+  html,
+} from "@open-wc/testing";
 import sinon from "sinon";
 import "../src/registered";
 
@@ -377,7 +383,7 @@ describe("auro-button", () => {
     expect(innerButton.getAttribute("type")).to.equal("reset");
 
     innerButton.click();
-    await elementUpdated(el);
+    await aTimeout(0);
 
     expect(mockReset.calledOnce).to.be.true;
     expect(input.value).to.equal("Auro");
@@ -396,7 +402,7 @@ describe("auro-button", () => {
     input.value = "Changed";
 
     el.querySelector("auro-button").shadowRoot.querySelector("button").click();
-    await elementUpdated(el);
+    await aTimeout(0);
 
     expect(input.value).to.equal("Auro");
   });
@@ -421,7 +427,7 @@ describe("auro-button", () => {
     for (const button of el.querySelectorAll("auro-button")) {
       button.shadowRoot.querySelector("button").click();
     }
-    await elementUpdated(el);
+    await aTimeout(0);
 
     expect(mockReset.called).to.be.false;
     expect(input.value).to.equal("Changed");
@@ -449,9 +455,29 @@ describe("auro-button", () => {
     for (const button of el.querySelectorAll("auro-button")) {
       button.shadowRoot.querySelector("button, span").click();
     }
-    await elementUpdated(el);
+    await aTimeout(0);
 
     expect(mockReset.called).to.be.false;
+    expect(input.value).to.equal("Changed");
+  });
+
+  it("does not reset the form when a listener cancels the reset click", async () => {
+    const el = await fixture(html`
+      <form>
+        <label for="cancel-reset-name">Name</label>
+        <input id="cancel-reset-name" name="name" value="Auro" />
+        <auro-button type="reset">Reset</auro-button>
+      </form>
+    `);
+
+    el.addEventListener("click", (e) => e.preventDefault());
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    el.querySelector("auro-button").shadowRoot.querySelector("button").click();
+    await aTimeout(0);
+
     expect(input.value).to.equal("Changed");
   });
 

@@ -383,7 +383,6 @@ describe("auro-button", () => {
     expect(innerButton.getAttribute("type")).to.equal("reset");
 
     innerButton.click();
-    await aTimeout(0);
 
     expect(mockReset.calledOnce).to.be.true;
     expect(input.value).to.equal("Auro");
@@ -397,6 +396,25 @@ describe("auro-button", () => {
         <auro-button type="reset">Reset</auro-button>
       </form>
     `);
+
+    const input = el.querySelector("input");
+    input.value = "Changed";
+
+    el.querySelector("auro-button").shadowRoot.querySelector("button").click();
+
+    expect(input.value).to.equal("Auro");
+  });
+
+  it("resets the form when a listener stops propagation of the reset click", async () => {
+    const el = await fixture(html`
+      <form>
+        <label for="stop-reset-name">Name</label>
+        <input id="stop-reset-name" name="name" value="Auro" />
+        <auro-button type="reset">Reset</auro-button>
+      </form>
+    `);
+
+    el.addEventListener("click", (e) => e.stopPropagation());
 
     const input = el.querySelector("input");
     input.value = "Changed";

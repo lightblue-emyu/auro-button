@@ -377,15 +377,30 @@ export class AuroButton extends AuroElement {
    * @returns {void}
    */
   surfaceResetEvent(event) {
-    // Waits until the click finishes propagating, so listeners on ancestors such as the form can cancel it, as with a native reset button.
-    setTimeout(() => {
+    // Waits until the click reaches `window`, the end of its path, so listeners on ancestors such as
+    // the form can cancel it, as with a native reset button. Falls back to a timeout when a listener
+    // stops propagation, which doesn't cancel a native reset either.
+    let handled = false;
+
+    const reset = () => {
+      if (handled) return;
+      handled = true;
+      window.removeEventListener("click", onWindowClick);
+
       if (event.defaultPrevented || !this.form || this.matches(":disabled")) {
         return;
       }
 
       // Called from the prototype so a form control named "reset" can't shadow the method.
       HTMLFormElement.prototype.reset.call(this.form);
-    });
+    };
+
+    const onWindowClick = (windowEvent) => {
+      if (windowEvent === event) reset();
+    };
+
+    window.addEventListener("click", onWindowClick);
+    setTimeout(reset);
   }
 
   /**
